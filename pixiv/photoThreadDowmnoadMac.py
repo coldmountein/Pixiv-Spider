@@ -44,7 +44,7 @@ my_array = []
 # 访问网页
 
 # 在这里填入作者编号
-author="5375417"
+author="66610312"
 
 # 创建保存文件的文件夹
 save_folder = f'/Users/jbos/Downloads/pixiv/{author}'
@@ -54,7 +54,7 @@ if not os.path.exists(save_folder):
 # 开始网页
 a = 1
 # 总页数
-while a <= 14:
+while a <= 6:
     page.get(f'https://www.pixiv.net/users/{author}/artworks?p={a}')
     # 在页面中查找元素
     items = page.eles('.sc-rp5asc-9 itpOYX')
