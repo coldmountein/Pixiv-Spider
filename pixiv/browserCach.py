@@ -2,8 +2,6 @@
 from DrissionPage import ChromiumPage
 # 创建页面对象
 page = ChromiumPage()
-import os
-import threading
 from concurrent.futures import ThreadPoolExecutor
 
 page.get('https://www.pixiv.net/users/25215933')
