@@ -1,10 +1,9 @@
-# 导入
 from DrissionPage import ChromiumPage
+import os
+from concurrent.futures import ThreadPoolExecutor
+
 # 创建页面对象
 page = ChromiumPage()
-import os
-import threading
-from concurrent.futures import ThreadPoolExecutor
 
 def download(url, author):
     save_path = f'/Users/jbos/Downloads/pixiv/{author}'
@@ -34,17 +33,25 @@ def multi_thread_download(urls, author, max_workers=5):
     print("All downloads completed.")
 
 def convert_url(original_url):
-    # 替换部分内容
-    converted_url = original_url.replace("/c/250x250_80_a2/img-master/", "/img-original/")
-    converted_url = converted_url.replace("_square1200", "")
+    if original_url is None:
+        raise ValueError("URL is None")
+    # 判断并替换不同的部分内容
+    if "/img-master/" in original_url:
+        converted_url = original_url.replace("/c/250x250_80_a2/img-master/", "/img-original/")
+        converted_url = converted_url.replace("_square1200", "")
+    elif "/custom-thumb/" in original_url:
+        converted_url = original_url.replace("/c/250x250_80_a2/custom-thumb/", "/img-original/")
+        converted_url = converted_url.replace("_custom1200", "")
+    else:
+        # 如果不匹配任何已知模式，返回原始URL
+        converted_url = original_url
     return converted_url
 
 # 创建一个空列表
 my_array = []
-# 访问网页
 
 # 在这里填入作者编号
-author="66610312"
+author = "91270513"
 
 # 创建保存文件的文件夹
 save_folder = f'/Users/jbos/Downloads/pixiv/{author}'
@@ -54,16 +61,24 @@ if not os.path.exists(save_folder):
 # 开始网页
 a = 1
 # 总页数
-while a <= 6:
+while a <= 1:
     page.get(f'https://www.pixiv.net/users/{author}/artworks?p={a}')
     # 在页面中查找元素
-    items = page.eles('.sc-rp5asc-9 itpOYX')
+    items = page.eles('.sc-rp5asc-9 cYUezH')
     # 遍历元素
     for item in items:
-        # 打印<a>元素文本和href属性
-        # my_array.append(item.child().attr('src'))
-        my_array.append(convert_url(item.child().attr('src')))
+        # 检查子元素是否存在，并获取src属性
+        child = item.child()
+        if child is None:
+            raise ValueError("Child element is None")
+        src = child.attr('src')
+        if src is None:
+            raise ValueError("src attribute is None")
+        converted_url = convert_url(src)
+        if converted_url:
+            my_array.append(converted_url)
     a += 1
 
+# 去重
 my_array = list(set(my_array))  
 multi_thread_download(my_array, author)
