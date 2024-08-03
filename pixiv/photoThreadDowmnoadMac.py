@@ -72,7 +72,7 @@ my_array = []
 existing_names = set()
 
 # 在这里填入作者编号
-author = "91270513"
+author = "104882231"
 
 # 创建保存文件的文件夹
 save_folder = f'/Users/jbos/Downloads/pixiv/{author}'
@@ -85,17 +85,17 @@ a = 1
 while a <= 1:
     page.get(f'https://www.pixiv.net/users/{author}/artworks?p={a}')
     # 在页面中查找元素
-    items = page.eles('.sc-rp5asc-9 cYUezH')
+    items = page.eles('.sc-rp5asc-9 itpOYX')
     # 遍历元素
     for item in items:
         # 检查子元素是否存在，并获取src属性
         child = item.child()
         if child is None:
-            raise ValueError("Child element is None")
+            continue
         src = child.attr('src')
         file_name=child.attr('alt')
         if src is None:
-            raise ValueError("src attribute is None")
+            continue
         file_name = process_file_name(file_name)
         converted_url = convert_url(src)
         if converted_url:
