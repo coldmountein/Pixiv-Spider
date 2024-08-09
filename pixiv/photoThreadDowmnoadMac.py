@@ -72,19 +72,18 @@ my_array = []
 existing_names = set()
 
 # 在这里填入作者编号
-author = "104882231"
-
-# 创建保存文件的文件夹
-save_folder = f'/Users/jbos/Downloads/pixiv/{author}'
-if not os.path.exists(save_folder):
-    os.makedirs(save_folder)
+authorNumber = "490219"
+authorID=""
 
 # 开始网页
 a = 1
 # 总页数
 while a <= 1:
-    page.get(f'https://www.pixiv.net/users/{author}/artworks?p={a}')
+    page.get(f'https://www.pixiv.net/users/{authorNumber}/artworks?p={a}')
     # 在页面中查找元素
+    item = page.ele('.sc-1bcui9t-5 ibhMns')
+    authorID=item.attr('innerHTML')
+
     items = page.eles('.sc-rp5asc-9 itpOYX')
     # 遍历元素
     for item in items:
@@ -103,4 +102,9 @@ while a <= 1:
             my_array.append({"src": converted_url, "fileName": unique_file_name})
     a += 1
 
-multi_thread_download(my_array, author)
+# 创建保存文件的文件夹
+save_folder = f'/Users/jbos/Downloads/pixiv/{authorID}'
+if not os.path.exists(save_folder):
+    os.makedirs(save_folder)
+
+multi_thread_download(my_array, authorID)
